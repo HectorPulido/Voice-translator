@@ -1,0 +1,13 @@
+pyttsx3
+SpeechRecognition
+pyaudio
+
+setuptools-rust
+torch
+torchvision
+torchaudio
+sacremoses
+pysimplegui
+
+transformers
+sentencepiece
