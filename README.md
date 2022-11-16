@@ -19,14 +19,14 @@ python3 main.py -d 0 --t #000 --b #0f0  -s 800x50
 usage: main.py [-h] [-d DEVICE] [-b BACKGROUND_COLOR] [-s SIZE] [-t TEXT_COLOR] [-l DEVICE_LIST] [--font FONT] [--font_size FONT_SIZE]
 
 options:
-  -h, --help                              | show this help message and exit
-  -d --device DEVICE                      | Device of microphone
-  -b --background_color BACKGROUND_COLOR  | Color of the background
-  -s --size SIZE                          | Size of the window
-  -t --text_color TEXT_COLOR              | Color of the text
-  -l --device_list DEVICE_LIST            | Show the device list
-  --font FONT                             | Font of the text
-  --font_size FONT_SIZE                   | Size of the font
+  -h, --help                              | show this help message and exit <br>
+  -d --device DEVICE                      | Device of microphone <br>
+  -b --background_color BACKGROUND_COLOR  | Color of the background <br>
+  -s --size SIZE                          | Size of the window <br>
+  -t --text_color TEXT_COLOR              | Color of the text <br>
+  -l --device_list DEVICE_LIST            | Show the device list <br>
+  --font FONT                             | Font of the text <br>
+  --font_size FONT_SIZE                   | Size of the font <br>
 
 
 <br>
