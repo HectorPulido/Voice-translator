@@ -5,7 +5,7 @@ from classes.speech_recognizer import SpeechToText
 from classes.graphic_interface import TranslatorInterface
 
 parser = argparse.ArgumentParser(
-    description="Este software permite una traduccion en tiempo casi real."
+    description="This software allows the near real time translation."
 )
 parser.add_argument("-d", "--device", type=int, help="Device of microphone")
 parser.add_argument(
@@ -14,8 +14,8 @@ parser.add_argument(
 parser.add_argument("-s", "--size", type=str, help="Size of the window")
 parser.add_argument("-t", "--text_color", type=str, help="Color of the text")
 parser.add_argument("-l", "--device_list", type=str2bool, help="Show the device list")
-parser.add_argument("--font", type=str, help="Color of the text")
-parser.add_argument("--font_size", type=int, help="Show the device list")
+parser.add_argument("--font", type=str, help="Font of the text")
+parser.add_argument("--font_size", type=int, help="Size of the font")
 
 args = parser.parse_args()
 variables = vars(args)

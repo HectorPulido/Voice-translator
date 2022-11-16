@@ -20,6 +20,8 @@ class TranslatorInterface(tk.Tk):
     def __init__(self, device, theme, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
+        self.title("Real time translator")
+
         windows_size = theme.get("size")
         self.geometry(windows_size)
 
