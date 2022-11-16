@@ -1,4 +1,3 @@
-from operator import mod
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 
@@ -26,5 +25,5 @@ class Translator:
             self.tokenizer.decode(outputs[0]).replace("<pad>", "").strip().lower()
         )
         if callback:
-            callback(translation)
+            callback(f"cc: {text}\ntraduction: {translation}")
         return translation

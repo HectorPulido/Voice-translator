@@ -25,12 +25,15 @@ class SpeechToText:
             try:
                 recording = recognizer.recognize_google(audio, language=self.language)
                 callback(recording)
-            except Exception as exception:
-                return
+            except Exception as _:
+                return False
+
+            return True
 
         self.r.listen_in_background(self.m, inner_callback)
 
-    def show_microphone_list(self):
+    @staticmethod
+    def show_microphone_list():
         mic_list = []
 
         for index, name in enumerate(sr.Microphone.list_microphone_names()):
