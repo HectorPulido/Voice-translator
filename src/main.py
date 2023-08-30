@@ -8,6 +8,7 @@ parser = argparse.ArgumentParser(
     description="This software allows the near real time translation."
 )
 parser.add_argument("-d", "--device", type=int, help="Device of microphone")
+parser.add_argument("-i", "--language", type=int, help="Language of the input")
 parser.add_argument(
     "-b", "--background_color", type=str, help="Color of the background"
 )
@@ -21,7 +22,7 @@ args = parser.parse_args()
 variables = vars(args)
 
 if __name__ == "__main__":
-
+    language = get_or(variables, "language", "en")
     device = get_or(variables, "device", 0)
     background_color = get_or(variables, "background_color", "#000")
     text_color = get_or(variables, "text_color", "#fff")
@@ -46,5 +47,5 @@ if __name__ == "__main__":
         "font": font,
     }
 
-    translator_interface = TranslatorInterface(device, theme)
+    translator_interface = TranslatorInterface(device, theme, language)
     translator_interface.mainloop()

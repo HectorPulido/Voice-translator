@@ -1,25 +1,7 @@
-import speech_recognition as sr
+from classes.speech_recognizer_base import SpeechToTextBase
 
 
-class SpeechToText:
-    def __init__(self, device=0, language="es"):
-        self.m = sr.Microphone(device_index=device)
-        self.r = sr.Recognizer()
-        self.language = language
-
-        with self.m as source:
-            self.r.adjust_for_ambient_noise(source)
-
-    def recognize(self):
-        with self.m as source:
-            audio = self.r.listen(source)
-        try:
-            text = self.r.recognize_google(audio, language=self.language)
-        except Exception as exception:
-            text = ""
-
-        return text
-
+class SpeechToText(SpeechToTextBase):
     def start_listening_in_background(self, callback):
         def inner_callback(recognizer, audio):
             try:
@@ -30,13 +12,4 @@ class SpeechToText:
 
             return True
 
-        self.r.listen_in_background(self.m, inner_callback)
-
-    @staticmethod
-    def show_microphone_list():
-        mic_list = []
-
-        for index, name in enumerate(sr.Microphone.list_microphone_names()):
-            mic_list.append((index, name))
-
-        return mic_list
+        self.recognizer.listen_in_background(self.microphone, inner_callback, phrase_time_limit=2)

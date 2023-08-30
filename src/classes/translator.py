@@ -1,29 +1,76 @@
+from transformers import pipeline
+
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 
 class Translator:
-    tokenizer_pretrained = "salesken/translation-spanish-and-portuguese-to-english"
-    model_pretrained = "salesken/translation-spanish-and-portuguese-to-english"
+    def __init__(self, language):
+        self.special_tokens_dict = {
+            ")": "<cp> ",
+            "(": "<op> ",
+            "?": "<qm> ",
+            "=": "<equal>",
+            "#": "<hash> ",
+            "@": "<at> ",
+            "&": "<ampersand> ",
+            "%": "<percent> ",
+            "$": "<dollar> ",
+            "£": "<pound> ",
+            "€": "<euro> ",
+            "¥": "<yen> ",
+        }
+        self.reverse_special_tokens_dict = {
+            v.strip(): k for k, v in self.special_tokens_dict.items()
+        }
 
-    def __init__(self, tokenizer=None, model=None):
-        if tokenizer:
-            self.tokenizer_pretrained = tokenizer
-        if model:
-            self.model_pretrained = model
+        self.model_en_to_es = pipeline(
+            "translation", model="Helsinki-NLP/opus-mt-en-es"
+        )
+        self.model_es_to_en = pipeline(
+            "translation", model="Helsinki-NLP/opus-mt-es-en"
+        )
 
-        self.tokenizer = AutoTokenizer.from_pretrained(self.tokenizer_pretrained)
-        self.model = AutoModelForSeq2SeqLM.from_pretrained(self.model_pretrained)
+        self.language = language
+
+    def english_to_spanish(self, text):
+        for key, value in self.special_tokens_dict.items():
+            text = text.replace(key, value)
+
+        translation = self.model_en_to_es(text)
+        if len(translation) > 0:
+            text = translation[0]["translation_text"]
+
+        for key, value in self.reverse_special_tokens_dict.items():
+            text = text.replace(key, value)
+
+        return text
+
+    def spanish_to_english(self, text):
+        if "¿" not in text and "?" in text:
+            text = "¿" + text
+
+        for key, value in self.special_tokens_dict.items():
+            text = text.replace(key, value)
+
+        translation = self.model_es_to_en(text)
+        if len(translation) > 0:
+            text = translation[0]["translation_text"]
+
+        for key, value in self.reverse_special_tokens_dict.items():
+            text = text.replace(key, value)
+
+        return text
 
     def translate(self, text, callback=None):
-        inputs = self.tokenizer.encode(
-            text, return_tensors="pt", padding=True, max_length=512, truncation=True
-        )
-        outputs = self.model.generate(
-            inputs, max_length=128, num_beams=None, early_stopping=True
-        )
-        translation = (
-            self.tokenizer.decode(outputs[0]).replace("<pad>", "").strip().lower()
-        )
+        translation = ""
+
+        if "en" in self.language:
+            translation = self.english_to_spanish(text)
+        elif "es" in self.language:
+            translation = self.spanish_to_english(text)
+        else:
+            translation = text
+
         if callback:
             callback(f"cc: {text}\ntraduction: {translation}")
         return translation

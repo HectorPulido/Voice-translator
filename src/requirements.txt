@@ -3,6 +3,7 @@ SpeechRecognition
 pyaudio
 
 setuptools-rust
+--extra-index-url https://download.pytorch.org/whl/cu116
 torch
 torchvision
 torchaudio
@@ -11,3 +12,5 @@ pysimplegui
 
 transformers
 sentencepiece
+
+openai-whisper

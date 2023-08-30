@@ -5,6 +5,27 @@ This is a near real time translator, recognize the speech and translate it.
 ## How to user
 First you must to install all the dependences with the command 
 
+if you want to use OpenAI whisper, you must install ffmpeg with the commands
+
+~~~
+# on Ubuntu or Debian
+sudo apt update && sudo apt install ffmpeg
+
+# on Arch Linux
+sudo pacman -S ffmpeg
+
+# on MacOS using Homebrew (https://brew.sh/)
+brew install ffmpeg
+
+# on Windows using Chocolatey (https://chocolatey.org/)
+choco install ffmpeg
+
+# on Windows using Scoop (https://scoop.sh/)
+scoop install ffmpeg
+~~~
+
+Then install the python dependences with the command
+
 ~~~
 pip install -r requirements.txt
 ~~~

@@ -17,7 +17,7 @@ class TranslatorInterface(tk.Tk):
             ),
         ).start()
 
-    def __init__(self, device, theme, *args, **kwargs):
+    def __init__(self, device, theme, original_language, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
         self.title("Real time translator")
@@ -33,7 +33,10 @@ class TranslatorInterface(tk.Tk):
 
         text_color = theme.get("text_color")
         caption_label = tk.Label(
-            self, fg=text_color, bg=background_color, textvariable=self.caption_var
+            self,
+            fg=text_color,
+            bg=background_color,
+            textvariable=self.caption_var,
         )
 
         font = theme.get("font")
@@ -42,8 +45,8 @@ class TranslatorInterface(tk.Tk):
 
         caption_label.pack(padx=10, pady=10)
 
-        self.translator = Translator()
-        self.speech_to_text = SpeechToText(device=device)
+        self.translator = Translator(original_language)
+        self.speech_to_text = SpeechToText(device=device, language=original_language)
 
         self.caption_var.set("Listening...")
         self.speech_to_text.start_listening_in_background(self.callback)
