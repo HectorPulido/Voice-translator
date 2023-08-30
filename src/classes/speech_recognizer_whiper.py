@@ -25,6 +25,7 @@ class SpeechToWhisper(SpeechToTextBase):
         self.temp_file = NamedTemporaryFile().name
         self.transcription = [""]
         self.phrase_time = datetime.utcnow()
+        self.last_sample = None
 
         threading.Thread(
             target=self.listen_loop,
@@ -50,16 +51,16 @@ class SpeechToWhisper(SpeechToTextBase):
         if self.phrase_time and now - self.phrase_time > timedelta(
             seconds=self.phrase_timeout
         ):
-            last_sample = bytes()
+            self.last_sample = bytes()
             phrase_complete = True
         self.phrase_time = now
 
         while not self.data_queue.empty():
             data = self.data_queue.get()
-            last_sample += data
+            self.last_sample += data
 
         audio_data = sr.AudioData(
-            last_sample,
+            self.last_sample,
             self.microphone.SAMPLE_RATE,
             self.microphone.SAMPLE_WIDTH,
         )

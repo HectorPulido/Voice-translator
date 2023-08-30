@@ -58,17 +58,3 @@ class Translator:
             text = text.replace(key, value)
 
         return text
-
-    def translate(self, text, callback=None):
-        translation = ""
-
-        if "en" in self.language:
-            translation = self.english_to_spanish(text)
-        elif "es" in self.language:
-            translation = self.spanish_to_english(text)
-        else:
-            translation = text
-
-        if callback:
-            callback(f"cc: {text}\ntraduction: {translation}")
-        return translation

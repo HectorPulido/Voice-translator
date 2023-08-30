@@ -7,16 +7,34 @@ from classes.speech_recognizer_whiper import SpeechToWhisper
 
 
 class TranslatorInterface(tk.Tk):
+    def translate(self, text):
+        translation = ""
+
+        if "en" in self.translator.language:
+            translation = self.translator.english_to_spanish(text)
+        elif "es" in self.translator.language:
+            translation = self.translator.spanish_to_english(text)
+        else:
+            translation = text
+
+        text_to_set = f"cc: {text}\ntraduction: {translation}"
+        self.get_font_size(text_to_set)
+        self.caption_var.set(text_to_set)
+        return translation
+
     def callback(self, text):
         if not text:
             return
         threading.Thread(
-            target=self.translator.translate,
-            args=(
-                text,
-                self.caption_var.set,
-            ),
+            target=self.translate,
+            args=(text),
         ).start()
+
+    def get_font_size(self, text):
+        buff = len(text)
+        height_size = int(self.height / 2)
+        width_size = int(self.width / (buff if buff >= 7 else 7))
+        return min(height_size, width_size)
 
     def select_model(self, device, orginal_language, whisper_model):
         if whisper_model:
@@ -31,9 +49,12 @@ class TranslatorInterface(tk.Tk):
         self.title("Real time translator")
 
         windows_size = theme.get("size").lower()
+        self.width = int(windows_size.split("x")[0])
+        self.height = int(windows_size.split("x")[1])
+
         self.geometry(windows_size)
-        self.minsize(int(windows_size.split("x")[0]), int(windows_size.split("x")[1]))
-        self.maxsize(int(windows_size.split("x")[0]), int(windows_size.split("x")[1]))
+        self.minsize(self.width, self.height)
+        self.maxsize(self.width, self.height)
 
         background_color = theme.get("background_color")
         self.configure(bg=background_color)
@@ -50,9 +71,8 @@ class TranslatorInterface(tk.Tk):
         )
 
         font = theme.get("font")
-        font_size = theme.get("font_size")
+        font_size = self.get_font_size(self.caption_var.get())
         caption_label.config(font=(font, font_size))
-
         caption_label.pack(padx=10, pady=10)
 
         self.translator = Translator(original_language)
