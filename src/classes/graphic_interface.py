@@ -3,6 +3,7 @@ import tkinter as tk
 
 from classes.translator import Translator
 from classes.speech_recognizer import SpeechToText
+from classes.speech_recognizer_whiper import SpeechToWhisper
 
 
 class TranslatorInterface(tk.Tk):
@@ -17,13 +18,22 @@ class TranslatorInterface(tk.Tk):
             ),
         ).start()
 
-    def __init__(self, device, theme, original_language, *args, **kwargs):
+    def select_model(self, device, orginal_language, whisper_model):
+        if whisper_model:
+            return SpeechToWhisper(device, orginal_language, whisper_model)
+        return SpeechToText(device, orginal_language)
+
+    def __init__(
+        self, device, theme, original_language, whisper_model, *args, **kwargs
+    ):
         tk.Tk.__init__(self, *args, **kwargs)
 
         self.title("Real time translator")
 
-        windows_size = theme.get("size")
+        windows_size = theme.get("size").lower()
         self.geometry(windows_size)
+        self.minsize(int(windows_size.split("x")[0]), int(windows_size.split("x")[1]))
+        self.maxsize(int(windows_size.split("x")[0]), int(windows_size.split("x")[1]))
 
         background_color = theme.get("background_color")
         self.configure(bg=background_color)
@@ -46,7 +56,9 @@ class TranslatorInterface(tk.Tk):
         caption_label.pack(padx=10, pady=10)
 
         self.translator = Translator(original_language)
-        self.speech_to_text = SpeechToText(device=device, language=original_language)
+        self.speech_to_text = self.select_model(
+            device, original_language, whisper_model
+        )
 
         self.caption_var.set("Listening...")
         self.speech_to_text.start_listening_in_background(self.callback)

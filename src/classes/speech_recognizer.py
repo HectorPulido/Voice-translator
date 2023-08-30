@@ -12,4 +12,6 @@ class SpeechToText(SpeechToTextBase):
 
             return True
 
-        self.recognizer.listen_in_background(self.microphone, inner_callback, phrase_time_limit=2)
+        self.recognizer.listen_in_background(
+            self.microphone, inner_callback, phrase_time_limit=2
+        )

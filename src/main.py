@@ -1,37 +1,22 @@
-import argparse
-
-from utils_func import str2bool, get_or
+import os
+from dotenv import load_dotenv
 from classes.speech_recognizer import SpeechToText
 from classes.graphic_interface import TranslatorInterface
 
-parser = argparse.ArgumentParser(
-    description="This software allows the near real time translation."
-)
-parser.add_argument("-d", "--device", type=int, help="Device of microphone")
-parser.add_argument("-i", "--language", type=int, help="Language of the input")
-parser.add_argument(
-    "-b", "--background_color", type=str, help="Color of the background"
-)
-parser.add_argument("-s", "--size", type=str, help="Size of the window")
-parser.add_argument("-t", "--text_color", type=str, help="Color of the text")
-parser.add_argument("-l", "--device_list", type=str2bool, help="Show the device list")
-parser.add_argument("--font", type=str, help="Font of the text")
-parser.add_argument("--font_size", type=int, help="Size of the font")
-
-args = parser.parse_args()
-variables = vars(args)
+load_dotenv()
 
 if __name__ == "__main__":
-    language = get_or(variables, "language", "en")
-    device = get_or(variables, "device", 0)
-    background_color = get_or(variables, "background_color", "#000")
-    text_color = get_or(variables, "text_color", "#fff")
-    size = get_or(variables, "size", "800x90")
+    language = os.getenv("LANGUAGE")
+    device = int(os.getenv("DEVICE"))
+    background_color = os.getenv("BACKGROUND_COLOR")
+    text_color = os.getenv("TEXT_COLOR")
+    size = os.getenv("SIZE")
+    font = os.getenv("FONT")
+    font_size = int(os.getenv("FONT_SIZE"))
+    whisper_model = os.getenv("WHISPER_MODEL")
+    device_list = bool(os.getenv("DEVICE_LIST") == "True")
 
-    font = get_or(variables, "font", "Helvatical bold")
-    font_size = get_or(variables, "font_size", 20)
-
-    if variables.get("device_list", False):
+    if device_list:
         mics = SpeechToText.show_microphone_list()
 
         print("Listing devices...")
@@ -47,5 +32,7 @@ if __name__ == "__main__":
         "font": font,
     }
 
-    translator_interface = TranslatorInterface(device, theme, language)
+    translator_interface = TranslatorInterface(
+        device, theme, language, whisper_model=whisper_model
+    )
     translator_interface.mainloop()

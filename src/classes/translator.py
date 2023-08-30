@@ -1,7 +1,5 @@
 from transformers import pipeline
 
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-
 
 class Translator:
     def __init__(self, language):
