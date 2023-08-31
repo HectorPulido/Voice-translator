@@ -16,3 +16,4 @@ sentencepiece
 openai-whisper
 
 python-dotenv
+soundfile

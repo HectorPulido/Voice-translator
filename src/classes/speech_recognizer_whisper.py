@@ -1,14 +1,15 @@
 import io
-import os
-import torch
-import whisper
 import threading
+from time import sleep
 from queue import Queue
-from tempfile import NamedTemporaryFile
 from datetime import datetime, timedelta
 
-from time import sleep
+import numpy as np
+import torch
+import whisper
 import speech_recognition as sr
+import soundfile as sf
+
 from classes.speech_recognizer_base import SpeechToTextBase
 
 
@@ -22,7 +23,6 @@ class SpeechToWhisper(SpeechToTextBase):
         self.callback = None
         self.language = language
 
-        self.temp_file = NamedTemporaryFile().name
         self.transcription = [""]
         self.phrase_time = datetime.utcnow()
         self.last_sample = None
@@ -64,15 +64,16 @@ class SpeechToWhisper(SpeechToTextBase):
             self.microphone.SAMPLE_RATE,
             self.microphone.SAMPLE_WIDTH,
         )
-        wav_data = io.BytesIO(audio_data.get_wav_data())
-
-        with open(self.temp_file, "w+b") as file:
-            file.write(wav_data.read())
+        wav_bytes = audio_data.get_wav_data(convert_rate=16000)
+        wav_stream = io.BytesIO(wav_bytes)
+        audio_array, _ = sf.read(wav_stream)
+        audio_array = audio_array.astype(np.float32)
 
         result = self.audio_model.transcribe(
-            self.temp_file,
+            audio_array,
             fp16=torch.cuda.is_available(),
         )
+
         language = result["language"]
 
         if language != self.language:
@@ -93,9 +94,9 @@ class SpeechToWhisper(SpeechToTextBase):
 
     def listen_loop(self):
         while True:
-            try:
-                self.handle_audio_data()
-            except Exception as exception:
-                print(exception)
-                # If something goes wrong, exit the program.
-                exit(1)
+
+            self.handle_audio_data()
+            # try:
+            #     self.handle_audio_data()
+            # except Exception as exception:
+            #     print("Error: ", exception)

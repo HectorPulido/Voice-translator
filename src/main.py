@@ -12,7 +12,6 @@ if __name__ == "__main__":
     text_color = os.getenv("TEXT_COLOR")
     size = os.getenv("SIZE")
     font = os.getenv("FONT")
-    font_size = int(os.getenv("FONT_SIZE"))
     whisper_model = os.getenv("WHISPER_MODEL")
     device_list = bool(os.getenv("DEVICE_LIST") == "True")
 
@@ -28,7 +27,6 @@ if __name__ == "__main__":
         "text_color": text_color,
         "background_color": background_color,
         "size": size,
-        "font_size": font_size,
         "font": font,
     }
 
