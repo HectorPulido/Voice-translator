@@ -11,6 +11,9 @@ class SpeechToTextBase(ABC):
         with self.microphone as source:
             self.recognizer.adjust_for_ambient_noise(source)
 
+    def set_device(self, device):
+        self.microphone = sr.Microphone(device_index=device)
+
     @abstractmethod
     def start_listening_in_background(self, callback):
         pass

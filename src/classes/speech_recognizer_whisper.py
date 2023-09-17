@@ -72,12 +72,8 @@ class SpeechToWhisper(SpeechToTextBase):
         result = self.audio_model.transcribe(
             audio_array,
             fp16=torch.cuda.is_available(),
+            language=self.language,
         )
-
-        language = result["language"]
-
-        if language != self.language:
-            return False
 
         text = result["text"].strip()
 
@@ -89,14 +85,12 @@ class SpeechToWhisper(SpeechToTextBase):
         if self.callback:
             self.callback(self.transcription[-1])
 
-        sleep(0.25)
+        sleep(0.2)
         return True
 
     def listen_loop(self):
         while True:
-
-            self.handle_audio_data()
-            # try:
-            #     self.handle_audio_data()
-            # except Exception as exception:
-            #     print("Error: ", exception)
+            try:
+                self.handle_audio_data()
+            except Exception as exception:
+                print("Error: ", exception)

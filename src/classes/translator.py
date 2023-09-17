@@ -2,7 +2,7 @@ from transformers import pipeline
 
 
 class Translator:
-    def __init__(self, language):
+    def __init__(self):
         self.special_tokens_dict = {
             ")": "<cp> ",
             "(": "<op> ",
@@ -28,9 +28,7 @@ class Translator:
             "translation", model="Helsinki-NLP/opus-mt-es-en"
         )
 
-        self.language = language
-
-    def english_to_spanish(self, text):
+    def english_to_spanish(self, text) -> str:
         for key, value in self.special_tokens_dict.items():
             text = text.replace(key, value)
 
@@ -43,7 +41,7 @@ class Translator:
 
         return text
 
-    def spanish_to_english(self, text):
+    def spanish_to_english(self, text) -> str:
         if "¿" not in text and "?" in text:
             text = "¿" + text
 

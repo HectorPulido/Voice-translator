@@ -8,7 +8,7 @@ torch
 torchvision
 torchaudio
 sacremoses
-pysimplegui
+
 
 transformers
 sentencepiece

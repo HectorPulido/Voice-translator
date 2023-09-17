@@ -1,36 +1,92 @@
-import os
-from dotenv import load_dotenv
-from classes.speech_recognizer import SpeechToText
-from classes.graphic_interface import TranslatorInterface
+import eel
+from classes.translator import Translator
+from classes.speech_recognizer_whisper import SpeechToWhisper
 
-load_dotenv()
 
-if __name__ == "__main__":
-    language = os.getenv("LANGUAGE")
-    device = int(os.getenv("DEVICE"))
-    background_color = os.getenv("BACKGROUND_COLOR")
-    text_color = os.getenv("TEXT_COLOR")
-    size = os.getenv("SIZE")
-    font = os.getenv("FONT")
-    whisper_model = os.getenv("WHISPER_MODEL")
-    device_list = bool(os.getenv("DEVICE_LIST") == "True")
+class GraphicInterface:
+    def __init__(self) -> None:
+        self.language = "es"
+        self.whisper = SpeechToWhisper(1, self.language, "small")
+        self.translator = Translator()
 
-    if device_list:
-        mics = SpeechToText.show_microphone_list()
+        eel.init("web")
+        eel.spawn(self.whisper.start_listening_in_background(self.callback))
+        eel._expose("choose_language", self.choose_language)
+        eel.start(
+            "index.html", mode="my_portable_chromium", host="localhost", port=27000, block=True
+        )
 
+    def choose_language(self, language_to_set):
+        self.language = language_to_set
+        self.whisper.language = self.language
+        print(f"Language set to {self.language}")
+
+
+    def callback(self, text):
+        if not text:
+            return
+
+        print(text)
+        eel.show_subtitles(text)
+
+        translation = ""
+        if self.language == "en":
+            translation = self.translator.english_to_spanish(text)
+        elif self.language == "es":
+            translation = self.translator.spanish_to_english(text)
+
+        print(translation)
+        eel.show_translation(translation)
+
+
+    def show_mics(self):
+        mics = SpeechToWhisper.show_microphone_list()
         print("Listing devices...")
         print("Value | Name")
         for mic in mics:
             print(f"{mic[0]} | {mic[1]}")
 
-    theme = {
-        "text_color": text_color,
-        "background_color": background_color,
-        "size": size,
-        "font": font,
-    }
 
-    translator_interface = TranslatorInterface(
-        device, theme, language, whisper_model=whisper_model
-    )
-    translator_interface.mainloop()
+
+if __name__ == "__main__":
+    GraphicInterface()
+
+
+# eel.init("web")
+
+# language = "es"
+
+# whisper = SpeechToWhisper(1, language, "small")
+# translator = Translator()
+
+
+# def callback(text):
+#     if not text:
+#         return
+
+#     print(text)
+#     eel.show_subtitles(text)
+
+#     if language == "en":
+#         translation = translator.english_to_spanish(text)
+#     elif language == "es":
+#         translation = translator.spanish_to_english(text)
+
+#     print(translation)
+#     eel.show_translation(translation)
+
+
+
+
+
+# @eel.expose
+# def choose_language(language_to_set):
+#     global language
+#     language = language_to_set
+#     whisper.language = language
+#     print(f"Language set to {language}")
+
+
+# eel.start(
+#     "index.html", mode="my_portable_chromium", host="localhost", port=27000, block=True
+# )
