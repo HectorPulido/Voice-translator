@@ -14,8 +14,8 @@ from classes.speech_recognizer_base import SpeechToTextBase
 
 
 class SpeechToWhisper(SpeechToTextBase):
-    def __init__(self, device=0, language="en", whisper_model="base"):
-        super().__init__(device, language)
+    def __init__(self, language="en", whisper_model="base"):
+        super().__init__(language)
 
         self.data_queue = Queue()
         self.audio_model = whisper.load_model(whisper_model)

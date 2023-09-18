@@ -3,8 +3,8 @@ import speech_recognition as sr
 
 
 class SpeechToTextBase(ABC):
-    def __init__(self, device, language):
-        self.microphone = sr.Microphone(device_index=device)
+    def __init__(self, language):
+        self.microphone = sr.Microphone()
         self.recognizer = sr.Recognizer()
         self.language = language
 

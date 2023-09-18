@@ -1,19 +1,16 @@
-pyttsx3
-SpeechRecognition
-pyaudio
+eel==0.16.0
+SpeechRecognition==3.10.0
+PyAudio==0.2.13
 
-setuptools-rust
+setuptools-rust==1.7.0
 --extra-index-url https://download.pytorch.org/whl/cu116
-torch
-torchvision
-torchaudio
-sacremoses
+torch==2.0.1
+torchaudio==2.0.2
+torchvision==0.15.2
 
+transformers==4.33.2
+sentencepiece==0.1.99
 
-transformers
-sentencepiece
-
-openai-whisper
-
-python-dotenv
-soundfile
+openai-whisper==20230314
+soundfile==0.12.1
+sacremoses==0.0.53
