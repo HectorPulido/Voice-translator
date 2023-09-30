@@ -2,6 +2,7 @@ import eel
 import json
 from classes.translator import Translator
 from classes.speech_recognizer_whisper import SpeechToWhisper
+from classes.blacklist import is_blacklisted
 
 
 class GraphicInterface:
@@ -17,6 +18,8 @@ class GraphicInterface:
         eel._expose("choose_language", self.choose_language)
         eel._expose("show_mics", self.show_mics)
         eel._expose("select_mic", self.select_mic)
+        eel._expose("choose_model", self.choose_model)
+        eel._expose("choose_phrase_timeout", self.choose_phrase_timeout)
         eel.start(
             "index.html",
             mode="my_portable_chromium",
@@ -36,16 +39,19 @@ class GraphicInterface:
 
     def choose_model(self, model_to_set):
         self.model = model_to_set
-        self.whisper = SpeechToWhisper(self.language, self.model)
+        self.whisper.load_model(self.model)
         print(f"Model set to {self.model}")
 
     def choose_phrase_timeout(self, phrase_timeout_to_set):
         self.phrase_timeout = phrase_timeout_to_set
-        self.whisper = SpeechToWhisper(self.language, self.model, self.phrase_timeout)
+        self.whisper.phrase_timeout = float(self.phrase_timeout)
         print(f"Phrase timeout set to {self.phrase_timeout}")
 
     def callback(self, text):
         if not text:
+            return
+
+        if is_blacklisted(text):
             return
 
         print(text)

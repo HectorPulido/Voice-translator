@@ -14,11 +14,12 @@ from classes.speech_recognizer_base import SpeechToTextBase
 
 
 class SpeechToWhisper(SpeechToTextBase):
-    def __init__(self, language="en", whisper_model="base", phrase_timeout=1):
+    def __init__(self, language="en", whisper_model="base", phrase_timeout=1.0):
         super().__init__(language)
 
+        print("Loading model...")
         self.data_queue = Queue()
-        self.audio_model = whisper.load_model(whisper_model)
+        self.load_model(whisper_model)
         self.phrase_timeout = phrase_timeout
         self.callback = None
         self.language = language
@@ -30,6 +31,11 @@ class SpeechToWhisper(SpeechToTextBase):
         threading.Thread(
             target=self.listen_loop,
         ).start()
+
+        print("Model ready...")
+
+    def load_model(self, model_name):
+        self.audio_model = whisper.load_model(model_name)
 
     def record_callback(self, _, audio: sr.AudioData) -> None:
         data = audio.get_raw_data()
@@ -85,7 +91,7 @@ class SpeechToWhisper(SpeechToTextBase):
         if self.callback:
             self.callback(self.transcription[-1])
 
-        sleep(0.2)
+        sleep(0.2 * self.phrase_timeout)
         return True
 
     def listen_loop(self):
