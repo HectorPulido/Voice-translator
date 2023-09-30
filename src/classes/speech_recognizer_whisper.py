@@ -14,12 +14,12 @@ from classes.speech_recognizer_base import SpeechToTextBase
 
 
 class SpeechToWhisper(SpeechToTextBase):
-    def __init__(self, language="en", whisper_model="base"):
+    def __init__(self, language="en", whisper_model="base", phrase_timeout=1):
         super().__init__(language)
 
         self.data_queue = Queue()
         self.audio_model = whisper.load_model(whisper_model)
-        self.phrase_timeout = 2
+        self.phrase_timeout = phrase_timeout
         self.callback = None
         self.language = language
 

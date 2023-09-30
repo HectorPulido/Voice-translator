@@ -7,7 +7,9 @@ from classes.speech_recognizer_whisper import SpeechToWhisper
 class GraphicInterface:
     def __init__(self) -> None:
         self.language = "es"
-        self.whisper = SpeechToWhisper(self.language, "small")
+        self.model = "base"
+        self.phrase_timeout = 1
+        self.whisper = SpeechToWhisper(self.language, self.model, self.phrase_timeout)
         self.translator = Translator()
 
         eel.init("web")
@@ -31,6 +33,16 @@ class GraphicInterface:
         self.language = language_to_set
         self.whisper.language = self.language
         print(f"Language set to {self.language}")
+
+    def choose_model(self, model_to_set):
+        self.model = model_to_set
+        self.whisper = SpeechToWhisper(self.language, self.model)
+        print(f"Model set to {self.model}")
+
+    def choose_phrase_timeout(self, phrase_timeout_to_set):
+        self.phrase_timeout = phrase_timeout_to_set
+        self.whisper = SpeechToWhisper(self.language, self.model, self.phrase_timeout)
+        print(f"Phrase timeout set to {self.phrase_timeout}")
 
     def callback(self, text):
         if not text:

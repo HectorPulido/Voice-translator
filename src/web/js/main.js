@@ -6,6 +6,16 @@ document.getElementById("select-mic").addEventListener("change", () => {
   eel.select_mic(document.getElementById("select-mic").value);
 }, false);
 
+document.getElementById("select-model").addEventListener("change", () => { 
+  console.log(document.getElementById("select-model").value);
+  eel.choose_model(document.getElementById("select-model").value);
+}, false);
+
+document.getElementById("phrase-timeout").addEventListener("change", () => { 
+  console.log(document.getElementById("phrase-timeout").value);
+  eel.choose_phrase_timeout(document.getElementById("phrase-timeout").value);
+}, false);
+
 function show_subtitles(subtitles) {
   document.getElementById("subtitles-text").innerHTML = subtitles;
 }
